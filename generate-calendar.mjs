@@ -151,8 +151,8 @@ const createCalendar = (matches) => {
       "BEGIN:VEVENT",
       `UID:${match.id}@wc2026schedule`,
       `DTSTAMP:${nowUtc}`, // System creation/modification timestamp (strictly UTC required)
-      `DTSTART:${formatLocalCalendarDate(start)}`, // Local match kick-off time (No 'Z' suffix)
-      `DTEND:${formatLocalCalendarDate(end)}`,     // Local match completion time (No 'Z' suffix)
+        `DTSTART;TZID=Asia/Ho_Chi_Minh:${formatLocalCalendarDate(start)}`,
+      `DTEND;TZID=Asia/Ho_Chi_Minh:${formatLocalCalendarDate(end)}`,
       `SUMMARY:${escapeIcsText(`${match.homeTeam} vs ${match.awayTeam}`)}`,
       `DESCRIPTION:${escapeIcsText(`Stage: ${match.stageLabel}\nStadium: ${match.stadium}\nCity: ${match.city}`)}`,
       `LOCATION:${escapeIcsText(`${match.stadium}, ${match.city}`)}`,

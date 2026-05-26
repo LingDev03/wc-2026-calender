@@ -149,8 +149,8 @@ const loadSchedule = async () => {
     let startUtc = item.startUtc || item.startUTC || null;
     if (!startUtc && item.date && item.time) {
       // Treat provided date/time as UTC timestamps (preserve previous behavior)
-      // Example: date="2026-06-12", time="02:00" -> "2026-06-12T02:00:00Z"
-      startUtc = `${item.date}T${item.time}:00Z`;
+      // Example: date="2026-06-12", time="02:00" -> "2026-06-12T02:00:00+07:00"
+      startUtc = `${item.date}T${item.time}:00+07:00`;
     }
 
     // Split `match` like "Home vs Away" into teams
