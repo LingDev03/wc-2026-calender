@@ -1,0 +1,52 @@
+name: Generate calendar.ics
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/matches.json'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/matches.json'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    name: Generate ICS and commit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --prefer-offline || npm install --no-audit
+
+      - name: Run generate:ics
+        run: npm run generate:ics
+
+      - name: Commit calendar.ics if changed
+        run: |
+          echo "Checking for changes..."
+          git add calendar.ics || true
+          if ! git diff --staged --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: regenerate calendar.ics" || echo "commit failed"
+            git push
+          else
+            echo "No changes to commit"
+          fi

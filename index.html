@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="World Cup 2026 match schedule with day and week views, plus calendar export for Google Calendar."
+    />
+    <title>WC 2026 Schedule</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="background-orb background-orb--one"></div>
+    <div class="background-orb background-orb--two"></div>
+
+    <main class="app-shell">
+      <section class="hero-card">
+        <div>
+          <p class="eyebrow" data-i18n="hero.eyebrow">FIFA World Cup 2026</p>
+          <h1 data-i18n="hero.title">View schedule and export</h1>
+          <p class="lead" data-i18n="hero.lead">
+            Browse the match schedule by day or week, then export the full
+            calendar as <span>.ics</span> or add it to Google Calendar by URL.
+          </p>
+        </div>
+
+        <div class="hero-actions">
+          <button class="button button--primary" id="downloadAllButton">Tải toàn bộ .ics</button>
+          <button class="button button--secondary" id="subscribeCalendarButton" type="button">Sao chép URL lịch</button>
+          <a class="button button--secondary" id="googleCalendarLink" href="#" target="_blank" rel="noreferrer">Thêm bằng URL vào Google Calendar</a>
+        </div>
+
+        <div class="action-guides" aria-label="Hướng dẫn nút">
+          <article class="action-guide">
+            <h3 data-i18n="guide.download.title">Download .ics</h3>
+            <p data-i18n="guide.download.desc">Use to download the full calendar file and import into any calendar app.</p>
+          </article>
+          <article class="action-guide">
+            <h3 data-i18n="guide.copy.title">Copy calendar URL</h3>
+            <p data-i18n="guide.copy.desc">Copy the share URL for the calendar and paste it into another app or service.</p>
+          </article>
+          <article class="action-guide">
+            <h3 data-i18n="guide.add.title">Add by URL to Google Calendar</h3>
+            <p data-i18n="guide.add.desc">Open Google Calendar and subscribe using the share URL.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="Điều khiển lịch">
+        <div class="segmented-control" role="tablist" aria-label="View mode">
+          <button class="segmented-control__button is-active" type="button" data-view="week" data-i18n-btn="view.week">Week</button>
+          <button class="segmented-control__button" type="button" data-view="day" data-i18n-btn="view.day">Day</button>
+        </div>
+
+        <label class="select-field">
+          <span data-i18n="toolbar.filter">Filter by stage</span>
+          <select id="stageFilter">
+            <option value="all" data-i18n="option.all">All</option>
+          </select>
+        </label>
+
+        <label class="select-field">
+          <span data-i18n="toolbar.timezone">Timezone</span>
+          <select id="timezoneSelect">
+            <option value="local" data-i18n="option.local">Local timezone</option>
+            <option value="utc">UTC</option>
+          </select>
+        </label>
+        <label class="select-field">
+          <span data-i18n="toolbar.lang">Language</span>
+          <select id="langSelect">
+            <option value="vi">Tiếng Việt</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+      </section>
+
+      
+        <section class="summary-strip" aria-live="polite">
+          <div>
+            <span class="summary-label" data-i18n="summary.timezone">Active timezone</span>
+            <strong id="activeTimezone">Local timezone</strong>
+          </div>
+          <div>
+            <span class="summary-label" data-i18n="summary.matches">Matches shown</span>
+            <strong id="matchesShown">0</strong>
+          </div>
+          <div>
+            <span class="summary-label" data-i18n="summary.next">Next match</span>
+            <strong id="nextFixture">Loading…</strong>
+          </div>
+        </section>
+
+      <section class="schedule-panel">
+        <div class="schedule-panel__header">
+          <div>
+            <p class="eyebrow" data-i18n="schedule.eyebrow">Match schedule</p>
+            <h2 id="scheduleTitle">Xem tuần</h2>
+          </div>
+          <p class="muted" id="scheduleMeta">Thời gian được hiển thị theo múi giờ bạn chọn.</p>
+        </div>
+
+        <div id="scheduleList" class="schedule-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <template id="matchCardTemplate">
+      <article class="match-card">
+        <div class="match-card__meta">
+          <span class="match-stage"></span>
+          <span class="match-id"></span>
+        </div>
+        <div class="match-card__body">
+          <div>
+            <h3 class="match-title"></h3>
+            <p class="match-time"></p>
+          </div>
+          <div class="match-location"></div>
+        </div>
+      </article>
+    </template>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

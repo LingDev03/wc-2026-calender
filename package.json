@@ -1,0 +1,11 @@
+{
+  "name": "wc-2026-schedule",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.cjs",
+    "start": "node server.cjs",
+    "generate:ics": "node generate-calendar.mjs"
+  }
+}
