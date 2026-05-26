@@ -8,6 +8,7 @@ const defaultOutputPath = path.resolve(root, "calendar.ics");
 
 const parseCliPath = (value, fallback) => path.resolve(process.cwd(), value ?? fallback);
 
+// Giữ nguyên hàm escape văn bản rất tốt của bạn
 const escapeIcsText = (value) =>
   String(value)
     .replaceAll("\\", "\\\\")
@@ -15,20 +16,33 @@ const escapeIcsText = (value) =>
     .replaceAll(",", "\\,")
     .replaceAll("\n", "\\n");
 
-const formatUtcDate = (date) => {
-  const iso = new Date(date).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-  return iso;
+/**
+ * SỬA LỖI: Hàm format thời gian Local (Múi giờ Việt Nam)
+ * Trả về định dạng: YYYYMMDDTHHMMSS (Không có chữ Z ở cuối)
+ */
+const formatLocalCalendarDate = (dateObj) => {
+  const pad = (num) => String(num).padStart(2, "0");
+  
+  const year = dateObj.getFullYear();
+  const month = pad(dateObj.getMonth() + 1);
+  const day = pad(dateObj.getDate());
+  const hours = pad(dateObj.getHours());
+  const minutes = pad(dateObj.getMinutes());
+  const seconds = pad(dateObj.getSeconds());
+
+  return `${year}${month}${day}T${hours}${minutes}${seconds}`;
 };
 
-const formatStamp = (date) => formatUtcDate(date).replace(/Z$/, "");
+// DTSTAMP vẫn cần chuẩn UTC gốc có chữ Z theo đặc tả iCalendar
+const formatUtcDate = (date) => {
+  return new Date(date).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+};
 
 const normalizeMatches = (parsed) => {
   const matches = Array.isArray(parsed) ? parsed : parsed?.matches;
-
   if (!Array.isArray(matches)) {
     throw new Error("Input JSON must be an array or contain a top-level 'matches' array.");
   }
-
   return matches;
 };
 
@@ -37,8 +51,7 @@ const normalizeMatchItem = (item) => {
 
   let startUtc = item.startUtc || item.startUTC || null;
   if (!startUtc && item.date && item.time) {
-    // assume date and time are already in UTC
-    startUtc = `${item.date}T${item.time}:00Z`;
+    startUtc = `${item.date}T${item.time}:00+07:00`;
   }
 
   let homeTeam = "";
@@ -56,7 +69,7 @@ const normalizeMatchItem = (item) => {
     id,
     homeTeam,
     awayTeam,
-    stageLabel: item.stageLabel || item.stage || "",
+    stageLabel: item.stage ||  item.stageLabel || "",
     stadium: item.stadium || "",
     city: item.city || "",
     startUtc,
@@ -100,21 +113,22 @@ const createCalendar = (matches) => {
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "X-WR-CALNAME:WC 2026 Schedule",
-    "X-WR-TIMEZONE:UTC",
+    "X-WR-TIMEZONE:Asia/Ho_Chi_Minh",
     "PRODID:-//WC 2026 Schedule//EN",
   ];
 
-  const now = formatStamp(new Date());
+  const nowUtc = formatUtcDate(new Date());
 
   for (const match of matches) {
     const start = new Date(match.startUtc);
     const end = new Date(start.getTime() + match.durationMinutes * 60_000);
+    
     lines.push(
       "BEGIN:VEVENT",
       `UID:${match.id}@wc2026schedule`,
-      `DTSTAMP:${now}Z`,
-      `DTSTART:${formatUtcDate(start)}`,
-      `DTEND:${formatUtcDate(end)}`,
+      `DTSTAMP:${nowUtc}`, 
+      `DTSTART:${formatLocalCalendarDate(start)}`, 
+      `DTEND:${formatLocalCalendarDate(end)}`,  
       `SUMMARY:${escapeIcsText(`${match.homeTeam} vs ${match.awayTeam}`)}`,
       `DESCRIPTION:${escapeIcsText(`${match.stageLabel}\n${match.stadium}, ${match.city}`)}`,
       `LOCATION:${escapeIcsText(`${match.stadium}, ${match.city}`)}`,
