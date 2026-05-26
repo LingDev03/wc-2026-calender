@@ -18,9 +18,9 @@ const googleCalendarLink = document.getElementById("googleCalendarLink");
 const langSelect = document.getElementById("langSelect");
 const viewButtons = Array.from(document.querySelectorAll("[data-view]"));
 const template = document.getElementById("matchCardTemplate");
-
-const calendarIcsUrl = new URL("calendar.ics", window.location.origin + window.location.pathname).href;
-const googleCalendarAddByUrl = `https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=${calendarIcsUrl}`;
+const githubRawUrl = "https://raw.githubusercontent.com/lingdev03/wc-2026-calender/main/calendar.ics";
+const cleanUrlForGoogle = "cdn.jsdelivr.net/gh/lingdev03/wc-2026-calender@main/calendar.ics";
+const googleCalendarAddByUrl = `https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=${cleanUrlForGoogle}`;
 let subscribeCalendarButtonLabel = "";
 
 const applyLanguage = () => {
