@@ -1,9 +1,11 @@
-import { t, currentLang as lang, setLang, translateDom } from "./i18n.js";
+import { t, currentLang, setLang, translateDom } from "./i18n.js";
 import { getLocalTimezoneLabel, formatDateTime, downloadFile } from "./utils.js";
 import { state, loadSchedule, getVisibleMatches, getNextMatch, groupMatches, buildIcs, getStageLabel, parseMatchDate } from "./state.js";
 
 // DOM References
 const matchesUrl = "data/matches.json";
+const calendarIcsUrl = new URL("../calendar.ics", import.meta.url).href;
+
 const scheduleList = document.getElementById("scheduleList");
 const scheduleTitle = document.getElementById("scheduleTitle");
 const matchesShown = document.getElementById("matchesShown");
@@ -18,6 +20,7 @@ const googleCalendarLink = document.getElementById("googleCalendarLink");
 const langSelect = document.getElementById("langSelect");
 const viewButtons = Array.from(document.querySelectorAll("[data-view]"));
 const template = document.getElementById("matchCardTemplate");
+
 const githubRawUrl = "https://raw.githubusercontent.com/lingdev03/wc-2026-calender/main/calendar.ics";
 const cleanUrlForGoogle = "cdn.jsdelivr.net/gh/lingdev03/wc-2026-calender@main/calendar.ics";
 const googleCalendarAddByUrl = `https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=${cleanUrlForGoogle}`;
@@ -32,7 +35,7 @@ const applyLanguage = () => {
   translateDom();
   updateControls();
   try {
-    document.documentElement.lang = lang === "vi" ? "vi" : "en";
+    document.documentElement.lang = currentLang === "vi" ? "vi" : "en";
   } catch {}
 };
 
@@ -188,7 +191,7 @@ const init = async () => {
   populateStageFilter();
   bindEvents();
   if (langSelect) {
-    langSelect.value = lang;
+    langSelect.value = currentLang;
   }
   applyLanguage();
   renderSchedule();
