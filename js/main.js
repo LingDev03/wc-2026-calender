@@ -16,20 +16,17 @@ const stageFilter = document.getElementById("stageFilter");
 const timezoneSelect = document.getElementById("timezoneSelect");
 const downloadAllButton = document.getElementById("downloadAllButton");
 const subscribeCalendarButton = document.getElementById("subscribeCalendarButton");
-const googleCalendarLink = document.getElementById("googleCalendarLink");
 const langSelect = document.getElementById("langSelect");
 const viewButtons = Array.from(document.querySelectorAll("[data-view]"));
 const template = document.getElementById("matchCardTemplate");
 
 const githubRawUrl = "https://raw.githubusercontent.com/lingdev03/wc-2026-calender/main/calendar.ics";
-const cleanUrlForGoogle = "cdn.jsdelivr.net/gh/lingdev03/wc-2026-calender@main/calendar.ics";
-const googleCalendarAddByUrl = `https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=${cleanUrlForGoogle}`;
 let subscribeCalendarButtonLabel = "";
+let copyTimeout = null;
 
 const applyLanguage = () => {
   downloadAllButton.textContent = t("downloadAll");
   subscribeCalendarButton.textContent = t("copyUrl");
-  googleCalendarLink.textContent = t("addByUrl");
   subscribeCalendarButtonLabel = subscribeCalendarButton.textContent;
   
   translateDom();
@@ -48,7 +45,6 @@ const updateControls = () => {
   activeTimezone.textContent = timezoneLabel;
   scheduleTitle.textContent = state.view === "week" ? t("weekView") : t("dayView");
   scheduleMeta.textContent = `${t("timesShownPrefix")} ${timezoneLabel}.`;
-  googleCalendarLink.href = googleCalendarAddByUrl;
 };
 
 const renderMatchCard = (match) => {
@@ -120,20 +116,26 @@ const renderSchedule = () => {
 };
 
 const copyCalendarUrl = async () => {
+  if (copyTimeout) {
+    clearTimeout(copyTimeout);
+  }
+
   try {
-    await navigator.clipboard.writeText(calendarIcsUrl);
+    await navigator.clipboard.writeText(githubRawUrl);
     subscribeCalendarButton.textContent = t("copied");
   } catch {
     const fallbackField = document.createElement("input");
-    fallbackField.value = calendarIcsUrl;
+    fallbackField.value = githubRawUrl;
     document.body.append(fallbackField);
     fallbackField.select();
     document.execCommand("copy");
     fallbackField.remove();
     subscribeCalendarButton.textContent = t("copied");
   }
-  window.setTimeout(() => {
+
+  copyTimeout = window.setTimeout(() => {
     subscribeCalendarButton.textContent = subscribeCalendarButtonLabel;
+    copyTimeout = null;
   }, 1200);
 };
 
