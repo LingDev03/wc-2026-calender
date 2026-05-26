@@ -9,6 +9,7 @@ export const STRINGS = {
     downloadAll: "Download .ics",
     copyUrl: "Copy calendar URL",
     addByUrl: "Add by URL to Google Calendar",
+    
     localTimezoneLabel: "Local timezone",
     "hero.eyebrow": "FIFA World Cup 2026",
     "hero.title": "View schedule and export",

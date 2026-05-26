@@ -1,9 +1,9 @@
-import { t, lang, setLang, translateDom } from "./i18n.js";
+import { t, currentLang as lang, setLang, translateDom } from "./i18n.js";
 import { getLocalTimezoneLabel, formatDateTime, downloadFile } from "./utils.js";
 import { state, loadSchedule, getVisibleMatches, getNextMatch, groupMatches, buildIcs, getStageLabel, parseMatchDate } from "./state.js";
 
 // DOM References
-const matchesUrl = new URL("./data/matches.json", import.meta.url);
+const matchesUrl = "data/matches.json";
 const scheduleList = document.getElementById("scheduleList");
 const scheduleTitle = document.getElementById("scheduleTitle");
 const matchesShown = document.getElementById("matchesShown");
@@ -19,7 +19,7 @@ const langSelect = document.getElementById("langSelect");
 const viewButtons = Array.from(document.querySelectorAll("[data-view]"));
 const template = document.getElementById("matchCardTemplate");
 
-const calendarIcsUrl = new URL("./calendar.ics", window.location.href).href;
+const calendarIcsUrl = new URL("calendar.ics", window.location.origin + window.location.pathname).href;
 const googleCalendarAddByUrl = `https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=${calendarIcsUrl}`;
 let subscribeCalendarButtonLabel = "";
 
